@@ -79,8 +79,6 @@ class GameService:
             "analytics": self.repository.analytics_snapshot(session_id),
         }
 
-
-
     def create_snapshot(self, session_id: str, target_path: str | None = None) -> dict:
         state = self.get_state(session_id)
         if "error" in state:
