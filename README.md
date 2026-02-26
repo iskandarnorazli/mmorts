@@ -51,6 +51,8 @@ All actions are validated and persisted; analytics snapshots include accepted/re
 - `POST /bots/tick` – tick bot players in a given session/tick.
 - `GET /state?session_id=...` – fetch authoritative state + analytics.
 - `GET /metrics?session_id=...` – fetch operational metrics (players, bots, units by type/domain, analytics).
+- `GET /sessions` – list all available sessions with map/player/unit summaries.
+- `POST /snapshot` – export a war-state snapshot to JSON for later review.
 
 Invalid JSON and malformed action payloads now return `400` with an error message.
 
@@ -84,6 +86,13 @@ python -m client.client --session-id demo --player-id p-1 --unit-id u-1 --tick 1
 ### Offline simulation
 ```bash
 python -m server.offline_sim
+```
+
+### Render verification (web viewer)
+```bash
+python -m server.app
+python -m http.server 9000
+# open http://localhost:9000/client/web/index.html and click Refresh
 ```
 
 ## AwanDB integration

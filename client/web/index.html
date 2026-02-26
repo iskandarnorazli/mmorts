@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MMORTS Viewer</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #0b1020; color: #e2e8f0; }
+    .bar { display: flex; gap: 8px; padding: 10px; background: #111827; align-items: center; }
+    input, button { padding: 6px 10px; border-radius: 6px; border: 1px solid #334155; background:#1f2937; color:#e2e8f0; }
+    #meta { padding: 10px; font-size: 14px; }
+    canvas { display:block; margin: 10px; border: 1px solid #334155; background: #0f172a; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <label>Server <input id="server" value="http://localhost:8080" /></label>
+    <label>Session <input id="session" value="demo" /></label>
+    <button id="refresh">Refresh</button>
+  </div>
+  <div id="meta">No data yet.</div>
+  <canvas id="map" width="720" height="720"></canvas>
+<script>
+const canvas = document.getElementById('map');
+const ctx = canvas.getContext('2d');
+const meta = document.getElementById('meta');
+
+function colorForDomain(domain) {
+  if (domain === 'land') return '#22c55e';
+  if (domain === 'air') return '#38bdf8';
+  if (domain === 'water') return '#a78bfa';
+  return '#f8fafc';
+}
+
+function drawState(state) {
+  const w = state.state.map === 'archipelago' ? 24 : 20;
+  const tile = Math.floor(canvas.width / w);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let y = 0; y < w; y++) {
+    for (let x = 0; x < w; x++) {
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(x*tile, y*tile, tile-1, tile-1);
+    }
+  }
+
+  Object.entries(state.state.units).forEach(([id, u]) => {
+    ctx.fillStyle = colorForDomain(u.domain);
+    ctx.beginPath();
+    ctx.arc((u.x + 0.5) * tile, (u.y + 0.5) * tile, Math.max(4, tile/3), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '10px Arial';
+    ctx.fillText(id, u.x*tile+2, u.y*tile+10);
+  });
+
+  const analytics = state.analytics;
+  meta.textContent = `tick=${state.state.tick}, units=${Object.keys(state.state.units).length}, accepted=${analytics.accepted_actions}, total=${analytics.total_actions}`;
+}
+
+async function refresh() {
+  const server = document.getElementById('server').value;
+  const session = document.getElementById('session').value;
+  const res = await fetch(`${server}/state?session_id=${encodeURIComponent(session)}`);
+  const json = await res.json();
+  drawState(json);
+}
+
+document.getElementById('refresh').addEventListener('click', refresh);
+refresh();
+</script>
+</body>
+</html>

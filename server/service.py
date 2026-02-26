@@ -6,6 +6,7 @@ from typing import Dict, List
 from server.domain import ActionRequest, GameSession, PlayerState, Unit
 from server.maps import get_map
 from server.persistence import Repository
+from server.snapshot import save_snapshot
 
 
 class GameService:
@@ -77,6 +78,29 @@ class GameService:
             "bots": len([p for p in session.players.values() if p.is_bot]),
             "analytics": self.repository.analytics_snapshot(session_id),
         }
+
+    def create_snapshot(self, session_id: str, target_path: str | None = None) -> dict:
+        state = self.get_state(session_id)
+        if "error" in state:
+            return state
+        location = save_snapshot(state, session_id=session_id, target_path=target_path)
+        return {"snapshot_path": location, "session_id": session_id}
+
+    def list_sessions(self) -> dict:
+        summaries = []
+        for session in self.sessions.values():
+            summaries.append(
+                {
+                    "session_id": session.session_id,
+                    "map": session.game_map.name,
+                    "tick": session.tick,
+                    "players": len(session.players),
+                    "bots": len([p for p in session.players.values() if p.is_bot]),
+                    "units": len(session.units),
+                }
+            )
+        summaries.sort(key=lambda x: x["session_id"])
+        return {"sessions": summaries, "total_sessions": len(summaries)}
 
     def _choose_bot_action(self, session: GameSession, player_id: str, tick: int) -> ActionRequest | None:
         units = [u for u in session.units.values() if u.owner_player_id == player_id]

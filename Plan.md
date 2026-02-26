@@ -6,3 +6,4 @@
 4. Add durability testing focused on multi-player action load, memory profile, network bytes, and unit counts.
 5. Add offline simulation mode, update docs, and provide a deep AwanDB analysis report.
 6. Improve combat simulation with collision handling, bullet drop behavior, and AoE damage registration.
+7. Verify rendering/gameplay/client-server interaction and persist war snapshots for review.

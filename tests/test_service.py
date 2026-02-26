@@ -45,6 +45,25 @@ class GameServiceTests(unittest.TestCase):
         self.assertEqual(3, metrics["players"])
         self.assertEqual(1, metrics["bots"])
 
+    def test_list_sessions_returns_expected_catalog(self):
+        repo = InMemoryRepository()
+        service = GameService(repository=repo)
+
+        payload = service.list_sessions()
+
+        self.assertGreaterEqual(payload["total_sessions"], 3)
+        ids = [entry["session_id"] for entry in payload["sessions"]]
+        self.assertIn("demo", ids)
+
+    def test_create_snapshot_returns_path(self):
+        repo = InMemoryRepository()
+        service = GameService(repository=repo)
+
+        result = service.create_snapshot("demo", target_path="snapshots/service_snapshot.json")
+
+        self.assertIn("snapshot_path", result)
+        self.assertEqual("demo", result["session_id"])
+
 
 if __name__ == "__main__":
     unittest.main()

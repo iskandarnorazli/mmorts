@@ -1,0 +1,83 @@
+{
+  "state": {
+    "session_id": "demo",
+    "map": "islands",
+    "tick": 1,
+    "players": {
+      "p-1": {
+        "is_bot": false,
+        "resources": {
+          "metal": 496,
+          "energy": 495,
+          "food": 498
+        },
+        "groups": {}
+      },
+      "p-2": {
+        "is_bot": false,
+        "resources": {
+          "metal": 497,
+          "energy": 497,
+          "food": 499
+        },
+        "groups": {}
+      },
+      "bot-1": {
+        "is_bot": true,
+        "resources": {
+          "metal": 499,
+          "energy": 496,
+          "food": 499
+        },
+        "groups": {}
+      }
+    },
+    "units": {
+      "u-1": {
+        "owner_player_id": "p-1",
+        "unit_type": "land_infantry",
+        "domain": "land",
+        "x": 5,
+        "y": 4,
+        "hp": 55
+      },
+      "u-2": {
+        "owner_player_id": "p-2",
+        "unit_type": "land_tank",
+        "domain": "land",
+        "x": 13,
+        "y": 13,
+        "hp": 180
+      },
+      "u-3": {
+        "owner_player_id": "bot-1",
+        "unit_type": "air_scout",
+        "domain": "air",
+        "x": 9,
+        "y": 9,
+        "hp": 65
+      },
+      "u-4": {
+        "owner_player_id": "p-1",
+        "unit_type": "water_destroyer",
+        "domain": "water",
+        "x": 0,
+        "y": 0,
+        "hp": 210
+      }
+    },
+    "unit_counts": {
+      "land_infantry": 1,
+      "land_tank": 1,
+      "air_scout": 1,
+      "water_destroyer": 1
+    }
+  },
+  "analytics": {
+    "session_id": "demo",
+    "total_actions": 1,
+    "accepted_actions": 1,
+    "rejected_actions": 0,
+    "network_bytes": 222
+  }
+}

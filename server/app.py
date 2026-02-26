@@ -39,6 +39,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         if self.path == "/bots/tick":
             self._handle_bot_tick()
             return
+        if self.path == "/snapshot":
+            self._handle_snapshot()
+            return
         self._send_json(404, {"error": "not found"})
 
     def do_GET(self) -> None:  # noqa: N802
@@ -48,6 +51,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             return
         if parsed.path == "/metrics":
             self._handle_metrics(parsed)
+            return
+        if parsed.path == "/sessions":
+            self._send_json(200, SERVICE.list_sessions())
             return
         self._send_json(404, {"error": "not found"})
 
@@ -76,6 +82,20 @@ class RequestHandler(BaseHTTPRequestHandler):
         tick = int(payload["tick"])
         result = SERVICE.tick_bots(session_id=session_id, tick=tick)
         self._send_json(200, {"bot_results": result})
+
+
+    def _handle_snapshot(self) -> None:
+        payload = self._read_json_body()
+        if payload is None:
+            return
+        session_id = payload.get("session_id")
+        if not session_id:
+            self._send_json(400, {"error": "session_id is required"})
+            return
+        target_path = payload.get("target_path")
+        result = SERVICE.create_snapshot(session_id=session_id, target_path=target_path)
+        status = 200 if "error" not in result else 404
+        self._send_json(status, result)
 
     def _handle_state(self, parsed) -> None:
         query = parse_qs(parsed.query)

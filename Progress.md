@@ -8,3 +8,4 @@
 - Added offline simulation entrypoint for local no-server testing.
 - Updated README and created `awandb.md` with an extensive improvement critique.
 - Added collision-aware movement/spawn validation and combat damage registration with bullet-drop and AoE behaviors.
+- Added web viewer rendering and snapshot export endpoint for war-state review.
